@@ -1,0 +1,11 @@
+# Sample config file.  Copy to ~/.task-toggl.yml and edit to suit
+toggl_email:        "you@example.com"
+start_annotation:   "Started task"
+stop_annotation:    "Stopped task"
+export_cmd:         "task export"
+# Map toggl csv columns to task fields
+field_map: 
+  Project: description
+  Tags: project
+# Task: description
+
