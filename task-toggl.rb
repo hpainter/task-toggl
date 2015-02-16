@@ -72,10 +72,24 @@ def time_diff(start_time, end_time)
   "#{hours.to_s.rjust(2, '0')}:#{minutes.to_s.rjust(2, '0')}:#{seconds.to_s.rjust(2, '0')}"
 end
 
+# Get task version (export format changed in 2.4):
+task_version = '';
+IO.popen('task --version') do |version|
+    task_version = version.read
+end
+
 # Run task export and capture json
-task_data = {}
+task_data = []
 IO.popen(options["export_cmd"]) do |task_io|
-  task_data = JSON.parse('[' + task_io.read + ']')
+  if Gem::Version.new(task_version) < Gem::Version.new('2.4.0') then 
+    task_data = JSON.parse('[' + task_io.read + ']')
+  else
+    task_strs = task_io.readlines
+    task_data = []
+    task_strs.each do |t|
+      task_data << JSON.parse(t)
+    end
+  end
 end
 
 csv_data = CSV.generate({:force_quotes => true}) do |csv|
